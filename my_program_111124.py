@@ -402,7 +402,7 @@ def update():
         if enemy.distance_to(my_character) <= 100:
             enemy.point_towards(my_character)
             my_character.point_towards(enemy)
-            enemy.image = "dusman_flipped_running"
+            enemy.image = "dusman_flipped_running"     # the figure must be replaced with the image "dusman_running"
             enemy.move_towards(my_character, 1)
             # dusman.move_in_direction(2)
             # dusman.animate()
