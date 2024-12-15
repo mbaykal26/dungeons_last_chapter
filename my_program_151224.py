@@ -32,7 +32,7 @@ map_list = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 class Sprite(Actor):
     def __init__(self, normal):
         super().__init__(normal)
-        self.health = 100
+        self.health = 200
         self.attack = 5
         self.normal = normal
         #self.bad = bad
@@ -60,7 +60,7 @@ class Sprite(Actor):
         elif (keyboard.down or keyboard.s) and self.y + 125 < HEIGHT:
             self.y += 2
         elif (keyboard.up or keyboard.w) and self.y + 20  > 100:
-            self.y -= 2         
+            self.y -= 2        
 
 
 cell = Sprite("sinir")
@@ -398,21 +398,44 @@ def update():
     clock.schedule_interval(change_direction, random.uniform(1, 2))
     
     for enemy in enemies:
+        cnt = 0
         #print(alien.distance_to(hero)) 
         if enemy.distance_to(my_character) <= 150 and enemy.x > my_character.x :
             enemy.point_towards(my_character)
             my_character.point_towards(enemy)
-            print(f"if statement works")
+            #print(f"if statement works")
+            if enemy.distance_to(my_character) <= 10:
+                cnt += 0.1
+                my_character.health -= enemy.attack
+                enemy.health -= my_character.attack
+                print(f"enemy.attack:{enemy.attack}, enemy.health:{enemy.health}")
+                if enemy.health >= 0 and enemy.health !< 0 :
+                    enemy.attack -= cnt
+                else:
+                    enemy.attack = 0
+                    cnt = 0
+                break
             enemy.image = "dusman_flipped_running"  #"dusman_flipped_running"  previous one 
             enemy.move_towards(my_character, 1)
             # dusman.move_in_direction(2)
             # dusman.animate()
         elif enemy.distance_to(my_character) <= 150 and enemy.x < my_character.x:
             my_character.image = "karakter_sol_attack_upsidedown"  # sol
-            print(f"elif statement works here!!!!")
+            #print(f"elif statement works here!!!!")
             enemy.image = "dusman_running"   #dusman_running
             enemy.point_towards(my_character)
             my_character.point_towards(enemy)
+            if enemy.distance_to(my_character) <= 10:
+                cnt += 0.1
+                my_character.health -= enemy.attack
+                enemy.health -= my_character.attack
+                print(f"enemy.attack:{enemy.attack}, enemy.health:{enemy.health}")
+                if enemy.health >= 0 and enemy.health !< 0:
+                    enemy.attack -= cnt
+                else:
+                    enemy.attack = 0
+                    cnt = 0
+                break
             #enemy.image = "dusman_running_updown"  #"dusman_flipped_running"  previous one 
             enemy.move_towards(my_character, 1)
             # dusman.move_in_direction(2)
