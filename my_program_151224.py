@@ -45,7 +45,7 @@ class Sprite(Actor):
     # vy = 5
 
     def update(self):
-        if (keyboard.right or keyboard.d) and self.x + 50 < WIDTH:
+        if (keyboard.right or keyboard.d) and self.x + 75 < WIDTH:
             self.x += 2
             #self.images = [normal]
             #self.image = 'karakter'
@@ -57,10 +57,10 @@ class Sprite(Actor):
             #self.image = 'sol'
             self.direction = "left"
             self.image = "karakter_sol_attack" if keyboard.left else "karakter" 
-        elif (keyboard.down or keyboard.s) and self.y + 100 < HEIGHT:
+        elif (keyboard.down or keyboard.s) and self.y + 125 < HEIGHT:
             self.y += 2
-        elif (keyboard.up or keyboard.w) and self.y + 50 > 100:
-            self.y -= 2        
+        elif (keyboard.up or keyboard.w) and self.y + 20  > 100:
+            self.y -= 2         
 
 
 cell = Sprite("sinir")
