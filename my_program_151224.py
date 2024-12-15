@@ -32,7 +32,7 @@ map_list = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 class Sprite(Actor):
     def __init__(self, normal):
         super().__init__(normal)
-        self.health = 200
+        self.health = 100
         self.attack = 5
         self.normal = normal
         #self.bad = bad
@@ -90,7 +90,7 @@ my_character = Sprite('karakter')
 my_character.images = ["karakter", "karakter_right_attack"]
 #my_character_left.images = ["sol", "karakter_sol_attack"]
 my_character.fps = 5
-my_character.health = 200
+my_character.health = 100
 my_character.attack = 5
 my_character.top = cell.height
 my_character.left = cell.width
@@ -337,15 +337,15 @@ def on_key_down(key):
             my_character.image = "karakter"
             sounds.eating_effect.stop()
 
-        if mod == "end" and keyboard.space:
-            mod = "menu"
-            enemies = []
-            form_enemies()
-            my_character.health = 200
-            my_character.attack = 5
-            my_character.pos = (50,50)  
-            swords = []
-            hearts = []                 
+    if mod == "end" and keyboard.space:
+        mod = "menu"
+        enemies = []
+        form_enemies()
+        my_character.health = 100
+        my_character.attack = 5
+        my_character.pos = (50,50)  
+        swords = []
+        hearts = []                 
 
 def if_win():
     global mod, winner
