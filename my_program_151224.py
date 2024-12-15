@@ -51,12 +51,14 @@ class Sprite(Actor):
             #self.image = 'karakter'
             self.direction = "right"
             self.image = "karakter_right_attack" if keyboard.right else "karakter"  # Use 
+            self.animate()
         elif (keyboard.left or keyboard.a) and self.x - cell.width > cell.width - 30:
             self.x -= 2
             #self.images = []
             #self.image = 'sol'
             self.direction = "left"
             self.image = "karakter_sol_attack" if keyboard.left else "karakter" 
+            self.animate()
         elif (keyboard.down or keyboard.s) and self.y + 125 < HEIGHT:
             self.y += 2
         elif (keyboard.up or keyboard.w) and self.y + 20  > 100:
@@ -88,7 +90,7 @@ my_character = Sprite('karakter')
 my_character.images = ["karakter", "karakter_right_attack"]
 #my_character_left.images = ["sol", "karakter_sol_attack"]
 my_character.fps = 5
-my_character.health = 120
+my_character.health = 200
 my_character.attack = 5
 my_character.top = cell.height
 my_character.left = cell.width
@@ -273,75 +275,77 @@ def draw():
 def on_key_down(key):
     global enemies, mod, hearts, swords   # hearts and swords variables added lately
     previous_x = my_character.x
-    previous_y = my_character.y    
-    enemy_list_index = my_character.collidelist(enemies)
-    if enemy_list_index != -1: #and karakter.image == "karakter":
-        #my_character.images = ["karakter", "karakter_right_attack"]
-        attack = 1
-        sounds.thaelmines.stop()
-        sounds.eating_effect.play()
-        my_character.image = "karakter_right_attack"
-        
-        my_character.x = previous_x
-        my_character.y = previous_y
-        enemy = enemies[enemy_list_index]
-        enemy.health -= my_character.attack
-        my_character.health -= enemy.attack
-        if enemy.health <= 0:
-            if enemy.bonus == 1:
-                heart = Sprite('kalp')
-                heart.pos = enemy.pos
-                hearts.append(heart)
-            elif enemy.bonus == 2:
-                sword = Sprite('kilic')
-                sword.pos = enemy.pos
-                swords.append(sword)
-            enemies.pop(enemy_list_index)
-    elif enemy_list_index != -1 and my_character.image == "sol":
-        my_character.images.extend(["sol", "karakter_sol_attack"])
-        attack = 1
-        sounds.thaelmines.stop()
-        sounds.eating_effect.play()
-        my_character.image = "karakter_sol_attack"
-        my_character.images = ["sol", "karakter_sol_attack"]
-        my_character.x = previous_x
-        my_character.y = previous_y
-        enemy = enemy[enemy_list_index]
-        enemy.health -= my_character.attack
-        my_character.health -= enemy.attack
-        if enemy.health <= 0:
-            if enemy.bonus == 1:
-                heart = Sprite('kalp')
-                heart.pos = enemy.pos
-                hearts.append(heart)
-            elif enemy.bonus == 2:
-                sword = Sprite('kilic')
-                sword.pos = enemy.pos
-                swords.append(sword)
-        # if dusman.health <= 0:
-            # if dusman.bonus == 1:
-            #     kalp = Actor('kalp')
-            #     kalp.pos = dusman.pos
-            #     kalpler.append(kalp)
-            # elif dusman.bonus == 2:
-            #     kilic = Actor('kilic')
-            #     kilic.pos = dusman.pos
-            #     kiliclar.append(kilic)
-            enemies.pop(enemy_list_index)
-    else:
-        attack = 0
-        my_character.image = "karakter"
-        sounds.eating_effect.stop()
+    previous_y = my_character.y
+    if mod == "play" or mod == "play_sound_off":
+        enemy_list_index = my_character.collidelist(enemies)
+        if enemy_list_index != -1: #and karakter.image == "karakter":
+            # previous_x = my_character.x
+            # previous_y = my_character.y   
+            #my_character.images = ["karakter", "karakter_right_attack"]
+            attack = 1
+            sounds.thaelmines.stop()
+            sounds.eating_effect.play()
+            my_character.image = "karakter_right_attack"            
+            my_character.x = previous_x
+            my_character.y = previous_y
+            enemy = enemies[enemy_list_index]
+            enemy.health -= my_character.attack
+            my_character.health -= enemy.attack
+            if enemy.health <= 0:
+                if enemy.bonus == 1:
+                    heart = Sprite('kalp')
+                    heart.pos = enemy.pos
+                    hearts.append(heart)
+                elif enemy.bonus == 2:
+                    sword = Sprite('kilic')
+                    sword.pos = enemy.pos
+                    swords.append(sword)
+                enemies.pop(enemy_list_index)
+        elif enemy_list_index != -1 and (my_character.image == "sol" or my_character.image == "karakter_sol_attack"):
+            my_character.images.extend(["sol", "karakter_sol_attack"])
+            attack = 1
+            sounds.thaelmines.stop()
+            sounds.eating_effect.play()
+            my_character.image = "karakter_sol_attack"
+            my_character.images = ["sol", "karakter_sol_attack"]
+            my_character.x = previous_x
+            my_character.y = previous_y
+            enemy = enemy[enemy_list_index]
+            enemy.health -= my_character.attack
+            my_character.health -= enemy.attack
+            if enemy.health <= 0:
+                if enemy.bonus == 1:
+                    heart = Sprite('kalp')
+                    heart.pos = enemy.pos
+                    hearts.append(heart)
+                elif enemy.bonus == 2:
+                    sword = Sprite('kilic')
+                    sword.pos = enemy.pos
+                    swords.append(sword)
+            # if dusman.health <= 0:
+                # if dusman.bonus == 1:
+                #     kalp = Actor('kalp')
+                #     kalp.pos = dusman.pos
+                #     kalpler.append(kalp)
+                # elif dusman.bonus == 2:
+                #     kilic = Actor('kilic')
+                #     kilic.pos = dusman.pos
+                #     kiliclar.append(kilic)
+                enemies.pop(enemy_list_index)
+        else:
+            attack = 0
+            my_character.image = "karakter"
+            sounds.eating_effect.stop()
 
-    if mod == "end" and keyboard.space:
-        mod = "menu"
-        enemies = []
-        form_enemies()
-        my_character.health = 100
-        my_character.attack = 5
-        my_character.pos = (50,50)  
-        swords = []
-        hearts = []                 
+        if mod == "end" and keyboard.space:
+            mod = "menu"
+            enemies = []
+            form_enemies()
+            my_character.health = 200
+            my_character.attack = 5
+            my_character.pos = (50,50)  
+            swords = []
+            hearts = []                 
 
 def if_win():
     global mod, winner
@@ -356,98 +360,97 @@ enemy_direction = 1  # 1 for forward, -1 for backward
 # UPDATE FUNCTION PART      
 def update():
     global puan, enemies, enemy_list_index, enemy_speed, enemy_direction
-    my_character.update()    
-    if keyboard.right or keyboard.left or keyboard.up or keyboard.down:  
-        my_character.animate()    
-    else:
-        my_character.image = "karakter"
-    if_win()    
-    for i in range(len(hearts)):
-        if my_character.colliderect(hearts[i]):
-            sounds.winning.play()
-            my_character.health += 10
-            hearts.pop(i)
-            break
-    for i in range(len(swords)):
-        if my_character.colliderect(swords[i]):
-            sounds.winning.play()
-            my_character.attack += 7
-            swords.pop(i)
-            break    
-
-    for i in range(len(enemies)):
-        enemies[i].x += enemy_speed * enemy_direction
-        change_cooldown = 2
-        # enemies[i].update()     #en son eklenen kodlardan
-        # enemies[i].animate() #en son eklenen kodlardan 
-
-        # Keep the enemy within screen bounds
-        if enemies[i].x < 100 :   #and dusmanlar[i].distance_to(karakter) > 200
-            enemies[i].x = 100
-            enemy_direction = 1  # Move forward
-        elif enemies[i].x > WIDTH - 100:  # and dusmanlar[i].distance_to(karakter) > 200
-            enemies[i].x = WIDTH - 100
-            enemy_direction = -1  # Move backward
-
-    def change_direction():
-        global enemy_direction
-        # Randomly change the direction (1 or -1)
-        enemy_direction = random.choice([-1, 1])
-
-    # Set a timer to change the direction every 1 to 2 seconds
-    clock.schedule_interval(change_direction, random.uniform(1, 2))
-    
-    for enemy in enemies:
-        cnt = 0
-        #print(alien.distance_to(hero)) 
-        if enemy.distance_to(my_character) <= 150 and enemy.x > my_character.x :
-            enemy.point_towards(my_character)
-            my_character.point_towards(enemy)
-            #print(f"if statement works")
-            if enemy.distance_to(my_character) <= 10:
-                cnt += 0.1
-                my_character.health -= enemy.attack
-                enemy.health -= my_character.attack
-                print(f"enemy.attack:{enemy.attack}, enemy.health:{enemy.health}")
-                if enemy.health >= 0 and enemy.health !< 0 :
-                    enemy.attack -= cnt
-                else:
-                    enemy.attack = 0
-                    cnt = 0
+    if mod == "play" or mod == "play_sound_off":
+        my_character.update()    
+        if keyboard.right or keyboard.left or keyboard.up or keyboard.down:  
+            my_character.animate()    
+        else:
+            my_character.image = "karakter"
+        if_win()    
+        for i in range(len(hearts)):
+            if my_character.colliderect(hearts[i]):
+                sounds.winning.play()
+                my_character.health += 10
+                hearts.pop(i)
                 break
-            enemy.image = "dusman_flipped_running"  #"dusman_flipped_running"  previous one 
-            enemy.move_towards(my_character, 1)
-            # dusman.move_in_direction(2)
-            # dusman.animate()
-        elif enemy.distance_to(my_character) <= 150 and enemy.x < my_character.x:
-            my_character.image = "karakter_sol_attack_upsidedown"  # sol
-            #print(f"elif statement works here!!!!")
-            enemy.image = "dusman_running"   #dusman_running
-            enemy.point_towards(my_character)
-            my_character.point_towards(enemy)
-            if enemy.distance_to(my_character) <= 10:
-                cnt += 0.1
-                my_character.health -= enemy.attack
-                enemy.health -= my_character.attack
-                print(f"enemy.attack:{enemy.attack}, enemy.health:{enemy.health}")
-                if enemy.health >= 0 and enemy.health !< 0:
-                    enemy.attack -= cnt
-                else:
-                    enemy.attack = 0
-                    cnt = 0
-                break
-            #enemy.image = "dusman_running_updown"  #"dusman_flipped_running"  previous one 
-            enemy.move_towards(my_character, 1)
-            # dusman.move_in_direction(2)
-            # dusman.animate()
-        
+        for i in range(len(swords)):
+            if my_character.colliderect(swords[i]):
+                sounds.winning.play()
+                my_character.attack += 7
+                swords.pop(i)
+                break    
+
+        for i in range(len(enemies)):
+            enemies[i].x += enemy_speed * enemy_direction
+            change_cooldown = 2
+            # enemies[i].update()     #en son eklenen kodlardan
+            # enemies[i].animate() #en son eklenen kodlardan 
+
+            # Keep the enemy within screen bounds
+            if enemies[i].x < 100 :   #and dusmanlar[i].distance_to(karakter) > 200
+                enemies[i].x = 100
+                enemy_direction = 1  # Move forward
+            elif enemies[i].x > WIDTH - 100:  # and dusmanlar[i].distance_to(karakter) > 200
+                enemies[i].x = WIDTH - 100
+                enemy_direction = -1  # Move backward
+
+        def change_direction():
+            global enemy_direction
+            # Randomly change the direction (1 or -1)
+            enemy_direction = random.choice([-1, 1])
+
+        # Set a timer to change the direction every 1 to 2 seconds
+        clock.schedule_interval(change_direction, random.uniform(1, 2))
+
+        for enemy in enemies:
+
+            #print(alien.distance_to(hero)) 
+            if enemy.distance_to(my_character) <= 150 and enemy.x > my_character.x :
+                enemy.point_towards(my_character)
+                my_character.point_towards(enemy)
+                #print(f"if statement works")
+                # if enemy.distance_to(my_character) <= 10:
+                #     my_character.health -= enemy.attack
+                #     enemy.health -= my_character.attack
+                #     print(f"enemy.attack:{enemy.attack}, enemy.health:{enemy.health}")
+                #     # if enemy.health >= 0: 
+                #     #     enemy.attack -= cnt
+                #     # else:
+                #     #     enemy.attack = 0
+                #     #     cnt = 0
+                #     break
+                enemy.image = "dusman_flipped_running"  #"dusman_flipped_running"  previous one 
+                enemy.move_towards(my_character, 1)
+                # dusman.move_in_direction(2)
+                # dusman.animate()
+            elif enemy.distance_to(my_character) <= 150 and enemy.x < my_character.x:
+                my_character.image = "karakter_sol_attack_upsidedown"  # sol
+                #print(f"elif statement works here!!!!")
+                enemy.image = "dusman_running"   #dusman_running
+                enemy.point_towards(my_character)
+                my_character.point_towards(enemy)
+                # if enemy.distance_to(my_character) <= 10:
+                #     my_character.health -= enemy.attack
+                #     enemy.health -= my_character.attack
+                #     print(f"enemy.attack:{enemy.attack}, enemy.health:{enemy.health}")
+                #     # if enemy.health >= 0:
+                #     #     enemy.attack -= cnt
+                #     # else:
+                #     #     enemy.attack = 0
+                #     #     cnt = 0
+                #     break
+                #enemy.image = "dusman_running_updown"  #"dusman_flipped_running"  previous one 
+                enemy.move_towards(my_character, 1)
+                # dusman.move_in_direction(2)
+                # dusman.animate()
+            
 
 
-    # clock.schedule(dusmanlar_right, 2.0)   
-    # def dusmanlar_left():        
-    #     for i in range(len(dusmanlar)):
-    #         dusmanlar[i].x = dusmanlar[i].x - hucre.width
-    #         break
+        # clock.schedule(dusmanlar_right, 2.0)   
+        # def dusmanlar_left():        
+        #     for i in range(len(dusmanlar)):
+        #         dusmanlar[i].x = dusmanlar[i].x - hucre.width
+        #         break
 
 
 def on_mouse_down(button, pos):
